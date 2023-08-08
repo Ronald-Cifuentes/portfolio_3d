@@ -1,0 +1,4 @@
+.gradient-box {
+  padding: 20px;
+  background: linear-gradient(30deg, rgb(0, 0, 111) 0%, transparent 50%, rgb(0, 0, 111) 100%);
+}

@@ -1,0 +1,195 @@
+.rainbow-text {
+  font-family: Oswald;
+  font-size: 100px;
+  animation: Color 4s linear infinite;
+  -webkit-animation: Color 4s ease-in-out infinite;
+}
+
+.rainbow-bg {
+  font-family: Oswald;
+  font-size: 100px;
+  animation: Bg 4s linear infinite;
+  -webkit-animation: Bg 4s ease-in-out infinite;
+}
+
+/* COLOR TEXT */
+
+@keyframes Color {
+  0% {
+    color: #a0d468;
+  }
+
+  20% {
+    color: #4fc1e9;
+  }
+
+  40% {
+    color: #ffce54;
+  }
+
+  60% {
+    color: #fc6e51;
+  }
+
+  80% {
+    color: #ed5565;
+  }
+
+  100% {
+    color: #ac92ec;
+  }
+}
+
+@-moz-keyframes Color {
+  0% {
+    color: #a0d468;
+  }
+
+  20% {
+    color: #4fc1e9;
+  }
+
+  40% {
+    color: #ffce54;
+  }
+
+  60% {
+    color: #fc6e51;
+  }
+
+  80% {
+    color: #ed5565;
+  }
+
+  100% {
+    color: #ac92ec;
+  }
+}
+
+@-webkit-keyframes Color {
+  0% {
+    color: #a0d468;
+  }
+
+  20% {
+    color: #4fc1e9;
+  }
+
+  40% {
+    color: #ffce54;
+  }
+
+  60% {
+    color: #fc6e51;
+  }
+
+  80% {
+    color: #ed5565;
+  }
+
+  100% {
+    color: #ac92ec;
+  }
+}
+
+/* BACGROUND COLOR */
+@keyframes Bg {
+  0% {
+    background: #a0d468;
+  }
+
+  20% {
+    background: #4fc1e9;
+  }
+
+  40% {
+    background: #ffce54;
+  }
+
+  60% {
+    background: #fc6e51;
+  }
+
+  80% {
+    background: #ed5565;
+  }
+
+  100% {
+    background: #ac92ec;
+  }
+}
+
+@-moz-keyframes Bg {
+  0% {
+    background: #a0d468;
+  }
+
+  20% {
+    background: #4fc1e9;
+  }
+
+  40% {
+    background: #ffce54;
+  }
+
+  60% {
+    background: #fc6e51;
+  }
+
+  80% {
+    background: #ed5565;
+  }
+
+  100% {
+    background: #ac92ec;
+  }
+}
+
+@-webkit-keyframes Bg {
+  0% {
+    background: #a0d468;
+  }
+
+  20% {
+    background: #4fc1e9;
+  }
+
+  40% {
+    background: #ffce54;
+  }
+
+  60% {
+    background: #fc6e51;
+  }
+
+  80% {
+    background: #ed5565;
+  }
+
+  100% {
+    background: #ac92ec;
+  }
+}
+
+.icon-container {
+  width: 84px;
+  height: 84px;
+}
+
+.icon-container img {
+  width: 100%;
+  height: auto;
+}
+
+.icon-container img:nth-child(2) {
+  display: none;
+}
+
+.icon-container:hover img:nth-child(1) {
+  display: none;
+}
+
+.icon-container:hover img:nth-child(2) {
+  display: block;
+  cursor: pointer;
+}
