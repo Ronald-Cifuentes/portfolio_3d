@@ -100,6 +100,7 @@ import {
   method,
   calculator,
   airlines,
+  SpotiClone,
 } from '../assets'
 
 export const navLinks = [
@@ -648,6 +649,30 @@ const basicTech1 = [
 ]
 
 export const projects = [
+  {
+    name: 'SpotiClone',
+    tags: [
+      {
+        name: 'react',
+        color: 'blue-text-gradient',
+      },
+      {
+        name: 'nextjs',
+        color: 'white-text-gradient',
+      },
+      {
+        name: 'axios',
+        color: 'green-text-gradient',
+      },
+      {
+        name: 'tailwindcss',
+        color: 'light-blue-text-gradient',
+      },
+      ...basicTech1.filter(x => x.name !== 'testing-library' && x.name !== 'husky'),
+    ],
+    image: SpotiClone,
+    source_code_link: 'https://github.com/Ronald-Cifuentes/next-spoticlone',
+  },
   {
     name: 'Tour Guides',
     tags: [

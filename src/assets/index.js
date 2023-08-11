@@ -134,6 +134,7 @@ export { default as github } from './github.png'
 export { default as tourguides } from './tourguides.png'
 export { default as airlines } from './airlines.png'
 export { default as calculator } from './calculator.png'
+export { default as SpotiClone } from './SpotiClone.png'
 
 export { default as control } from './control.svg'
 export { default as control1 } from './control1.svg'
