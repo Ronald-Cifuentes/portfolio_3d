@@ -6,11 +6,14 @@ const BgVideo = () => {
   const attemptPlay = () => {
     video1El &&
       video1El.current &&
-      video1El.current.play().then(_ => {
-        console.log('Success video background')
-      }).catch(error => {
-        console.error('Error attempting to play', error)
-      })
+      video1El.current
+        .play()
+        .then(_ => {
+          console.log('Success video background')
+        })
+        .catch(error => {
+          console.error('Error attempting to play', error)
+        })
   }
 
   useEffect(() => {
@@ -19,7 +22,7 @@ const BgVideo = () => {
 
   return (
     <video className='absolute z-0' loop muted ref={video1El}>
-      <source src='https://cdn-r.s3.us-east-2.amazonaws.com/Abstract_Liquids.mkv' type='video/mp4' />
+      <source src='https://r-sources.ddns.net/Abstract_Liquids.mkv' type='video/mp4' />
       Your browser does not support HTML video.
     </video>
   )
