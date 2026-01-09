@@ -1,8 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import 'tailwindcss';
+@source './index.html';
+@source './src/**/*.{js,jsx}';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary: #111111;
+  --color-secondary: #e1e1E1;
+  --color-tertiary: #3B3B3B;
+  --color-black-100: #100d25;
+  --color-black-200: #090325;
+  --color-white-100: #f3f3f3;
+
+  --shadow-card: 0px 35px 120px -15px #211e35;
+
+  --breakpoint-xs: 450px;
+
+  --background-image-hero-pattern: url('/src/assets/herobg.png');
+}
 
 * {
   margin: 0;
