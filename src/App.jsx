@@ -1,3 +1,4 @@
+import { BrowserRouter, useLocation } from 'react-router-dom'
 import {
   Contact,
   Content,
@@ -8,20 +9,72 @@ import {
   StarsCanvas,
   Tech,
 } from './components'
+import React, { useEffect, useRef } from 'react'
 
 import Background from './components/Background/Background'
-import { BrowserRouter } from 'react-router-dom'
 import Footer from './components/Footer/Footer'
-import React from 'react'
+
+const ScrollToHash = () => {
+  const location = useLocation()
+
+  useEffect(() => {
+    const hash = location.hash?.replace('#', '')
+    if (!hash) return
+
+    // Wait for React to paint the target section before attempting scroll
+    const id = decodeURIComponent(hash)
+    const scroll = () => {
+      const el = document.getElementById(id)
+      if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }
+
+    let raf1 = 0
+    let raf2 = 0
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(scroll)
+    })
+
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1)
+      if (raf2) cancelAnimationFrame(raf2)
+    }
+  }, [location.hash])
+
+  return null
+}
 
 const App = () => {
+  const ytBgRef = useRef(null)
+
   return (
     <BrowserRouter>
+      <ScrollToHash />
       <div className='relative z-0 bg-black'>
-        <div className='bg-cover bg-no-repeat bg-center' style={{ height: '850px' }}>
+        <div
+          id='home'
+          className='relative overflow-hidden bg-cover bg-no-repeat bg-center min-h-[100svh]'
+        >
           <Navbar />
           <Content />
-          <Background />
+          <Background ytRef={ytBgRef} />
+          <div className='ytbg__controls ytbg__controls--overlay' aria-hidden={false}>
+            <button
+              className='ytbg__btn ytbg__btn--prev'
+              type='button'
+              onClick={() => ytBgRef.current?.prev?.()}
+              aria-label='Previous video'
+            >
+              ‹
+            </button>
+            <button
+              className='ytbg__btn ytbg__btn--next'
+              type='button'
+              onClick={() => ytBgRef.current?.next?.()}
+              aria-label='Next video'
+            >
+              ›
+            </button>
+          </div>
           <Footer />
         </div>
 

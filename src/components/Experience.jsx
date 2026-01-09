@@ -1,12 +1,12 @@
-import React from 'react'
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
-import { motion } from 'framer-motion'
-
 import 'react-vertical-timeline-component/style.min.css'
 
-import { styles } from '../styles'
-import { experiences } from '../constants'
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
+
+import React from 'react'
 import { SectionWrapper } from '../hoc'
+import { experiences } from '../constants'
+import { motion } from 'framer-motion'
+import { styles } from '../styles'
 import { textVariant } from '../utils/motion'
 
 const ExperienceCard = ({ experience }) => {
@@ -53,7 +53,7 @@ const ExperienceCard = ({ experience }) => {
 const Experience = () => {
   return (
     <>
-      <motion.div variants={textVariant()}>
+      <motion.div variants={textVariant()} initial='hidden' animate='show'>
         <h2 className={`${styles.sectionHeadText} text-center`}>Work Experience.</h2>
       </motion.div>
 

@@ -5,7 +5,7 @@
 */
 
 .ytbg {
-  position: fixed;
+  position: absolute;
   inset: 0;
   overflow: hidden;
   z-index: 0;
@@ -14,30 +14,85 @@
 .ytbg__video {
   position: absolute;
   inset: 0;
+  z-index: 0;
 }
 
-/*
-  Classic “cover” trick for 16:9 video:
-  - width: 100vw, height: 56.25vw
-  - but never smaller than viewport height, so it always covers
-*/
 .ytbg__iframe {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100vw;
-  height: 56.25vw; /* 9/16 = 0.5625 */
-  min-height: 100vh;
-  min-width: 177.7777778vh; /* 16/9 = 1.777... */
+  width: 200%;
+  height: 200%;
+  min-width: 100%;
+  min-height: 100%;
   transform: translate(-50%, -50%);
   border: 0;
-  pointer-events: none; /* key: prevents hover/click UI */
+  pointer-events: none;
+}
+
+/* Portrait / small screens need a more aggressive oversize to avoid black bars */
+@media (max-width: 640px) {
+  .ytbg__iframe {
+    width: 300%;
+    height: 300%;
+  }
 }
 
 .ytbg__shade {
   position: absolute;
   inset: 0;
   background: #000;
+  z-index: 1;
+}
+
+/* Controls (mobile-first) */
+.ytbg__controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  z-index: 2;
+  pointer-events: none; /* buttons will re-enable */
+}
+
+.ytbg__controls--overlay {
+  z-index: 30;
+}
+
+.ytbg__btn {
+  pointer-events: auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(6px);
+}
+
+.ytbg__btn:active {
+  transform: scale(0.96);
+}
+
+@media (min-width: 640px) {
+  .ytbg__controls {
+    padding: 16px;
+  }
+  .ytbg__btn {
+    width: 60px;
+    height: 60px;
+    font-size: 44px;
+  }
 }
 
 /* Example helper styles for your content */
@@ -51,5 +106,10 @@
   z-index: 1;
   padding: 48px;
   color: white;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
 }
