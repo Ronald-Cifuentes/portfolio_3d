@@ -1,7 +1,7 @@
-import { ReactComponent as Linkedin } from '../../assets/Linkedin_40x40.svg'
-import { ReactComponent as Facebook } from '../../assets/Facebook_40x40.svg'
-import { ReactComponent as Twitter } from '../../assets/Twitter_40x40.svg'
-import { ReactComponent as Instagram } from '../../assets/Instagram_40x40.svg'
+import Facebook from '../../assets/Facebook_40x40.svg?react'
+import Instagram from '../../assets/Instagram_40x40.svg?react'
+import Linkedin from '../../assets/Linkedin_40x40.svg?react'
+import Twitter from '../../assets/Twitter_40x40.svg?react'
 
 export const List = [
   {

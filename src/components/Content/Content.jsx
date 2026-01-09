@@ -1,8 +1,9 @@
-import React from 'react'
-import { styles } from '../../styles'
-import { ComputersCanvas } from '../canvas'
 // import { control, control1, control2, control3 } from '../../assets'
 import './Content.css'
+
+import { ComputersCanvas } from '../canvas'
+import React from 'react'
+import { styles } from '../../styles'
 
 const Content = () => {
   return (
@@ -18,20 +19,12 @@ const Content = () => {
             Hi, I'm <span className='rainbow-text'>Ronald</span>
           </h1>
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            Web Developer, Designer UX / UI <br className='sm:block hidden' />
-            Web3, Javascript Specialist
+            Tech Lead | Sr React Developer | Sr Frontend | UX / UI | Sr Backend | Sr Nodejs | Sr Python | Web3 | Javascript | Mobile | Data Scientist | Machine Learning 
           </p>
         </div>
       </div>
 
       <ComputersCanvas />
-
-      {/* <div className='absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center'>
-        <div className='icon-container'>
-          <img src={control1} />
-          <img src={control2} />
-        </div>
-      </div> */}
     </section>
   )
 }
