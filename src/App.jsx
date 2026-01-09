@@ -1,18 +1,18 @@
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-
 import {
-  Skills,
   Contact,
-  Experience,
   Content,
+  Experience,
   Navbar,
-  Tech,
   Projects,
+  Skills,
   StarsCanvas,
+  Tech,
 } from './components'
+
 import Background from './components/Background/Background'
+import { BrowserRouter } from 'react-router-dom'
 import Footer from './components/Footer/Footer'
+import React from 'react'
 
 const App = () => {
   return (

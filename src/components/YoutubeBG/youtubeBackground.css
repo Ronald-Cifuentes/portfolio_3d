@@ -1,0 +1,55 @@
+/*
+  Full-screen YouTube iframe background.
+  - Keeps 16:9 ratio while covering the whole viewport.
+  - Disables pointer interaction so users don't see hover UI.
+*/
+
+.ytbg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.ytbg__video {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+  Classic “cover” trick for 16:9 video:
+  - width: 100vw, height: 56.25vw
+  - but never smaller than viewport height, so it always covers
+*/
+.ytbg__iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw; /* 9/16 = 0.5625 */
+  min-height: 100vh;
+  min-width: 177.7777778vh; /* 16/9 = 1.777... */
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none; /* key: prevents hover/click UI */
+}
+
+.ytbg__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+/* Example helper styles for your content */
+.ytbg-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.ytbg-content {
+  position: relative;
+  z-index: 1;
+  padding: 48px;
+  color: white;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}

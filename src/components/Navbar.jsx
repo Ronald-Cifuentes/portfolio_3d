@@ -31,7 +31,7 @@ const Navbar = () => {
         scrolled ? "bg-primary" : "bg-transparent"
       }`}
     >
-      <div className="w-full flex justify-end items-center max-w-7xl mx-auto">
+      <div className="w-full flex justify-end items-center">
 
         <ul className="list-none hidden sm:flex flex-row gap-10">
           {navLinks.map((nav) => (
