@@ -9,7 +9,7 @@ import {
   StarsCanvas,
   Tech,
 } from './components'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import Background from './components/Background/Background'
 import Footer from './components/Footer/Footer'
@@ -45,6 +45,7 @@ const ScrollToHash = () => {
 
 const App = () => {
   const ytBgRef = useRef(null)
+  const [selectedTech, setSelectedTech] = useState('')
 
   return (
     <BrowserRouter>
@@ -80,8 +81,12 @@ const App = () => {
 
         <Experience />
         <Skills />
-        <Tech />
-        <Projects />
+        <Tech selectedTech={selectedTech} onSelectTech={setSelectedTech} />
+        <Projects
+          selectedTech={selectedTech}
+          onSelectTech={setSelectedTech}
+          onClearTech={() => setSelectedTech('')}
+        />
         <div className='relative z-0'>
           <Contact />
           <StarsCanvas />

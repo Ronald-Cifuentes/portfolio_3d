@@ -1,17 +1,20 @@
-import React from 'react'
-import { Tilt } from 'react-tilt'
-import { motion } from 'framer-motion'
-
-import { styles } from '../styles'
-import { github } from '../assets'
-import { SectionWrapper } from '../hoc'
-import { projects } from '../constants'
+import React, { useMemo } from 'react'
 import { fadeIn, textVariant } from '../utils/motion'
 
-const ProjectCard = ({ index, name, tags, image, source_code_link }) => {
+import { SectionWrapper } from '../hoc'
+import { Tilt } from 'react-tilt'
+import { github } from '../assets'
+import { motion } from 'framer-motion'
+import { matchesSelectedTechToTag, normalizeTechName } from '../utils/techFilter'
+import { projects } from '../constants'
+import { styles } from '../styles'
+
+const ProjectCard = ({ index, name, tags, image, source_code_link, onSelectTech }) => {
   return (
     <motion.div
       variants={fadeIn('up', 'spring', index * 0.1, 0.75)}
+      initial='hidden'
+      animate='show'
       onClick={() => window.open(source_code_link, '_blank')}
       className='cursor-pointer w-full'
     >
@@ -39,9 +42,18 @@ const ProjectCard = ({ index, name, tags, image, source_code_link }) => {
 
         <div className='mt-0 flex flex-wrap gap-x-2'>
           {tags.map(tag => (
-            <p key={`${name}-${tag.name}`} className={`text-[14px] ${tag.color}`}>
+            <button
+              key={`${name}-${tag.name}`}
+              type='button'
+              className={`text-[14px] ${tag.color} hover:underline`}
+              onClick={e => {
+                e.stopPropagation()
+                onSelectTech?.(tag.name)
+              }}
+              aria-label={`Filter projects by ${tag.name}`}
+            >
               #{tag.name}
-            </p>
+            </button>
           ))}
         </div>
       </Tilt>
@@ -49,7 +61,14 @@ const ProjectCard = ({ index, name, tags, image, source_code_link }) => {
   )
 }
 
-const Projects = () => {
+const Projects = ({ selectedTech = '', onSelectTech, onClearTech }) => {
+  const filteredProjects = useMemo(() => {
+    if (!selectedTech) return projects
+    return projects.filter(p => p.tags?.some(t => matchesSelectedTechToTag(selectedTech, t.name)))
+  }, [selectedTech])
+
+  const gridKey = `projects-grid-${normalizeTechName(selectedTech) || 'all'}`
+
   return (
     <>
       <motion.div variants={textVariant()}>
@@ -57,21 +76,53 @@ const Projects = () => {
       </motion.div>
 
       <div className='w-full flex'>
-        <motion.p
-          variants={fadeIn('', '', 0.1, 1)}
-          className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
-        >
-          Following projects showcases my skills and experience through real-world examples of my
-          work. Each project is briefly described with links to code repositories and live demos in
-          it. It reflects my ability to solve complex problems, work with different technologies,
-          and manage projects effectively.
-        </motion.p>
+        <div className='flex flex-col gap-3'>
+          <motion.p
+            variants={fadeIn('', '', 0.1, 1)}
+            className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
+          >
+            Following projects showcases my skills and experience through real-world examples of my
+            work. Each project is briefly described with links to code repositories and live demos
+            in it. It reflects my ability to solve complex problems, work with different
+            technologies, and manage projects effectively.
+          </motion.p>
+
+          {selectedTech && (
+            <div className='flex flex-wrap items-center gap-2'>
+              <span className='text-secondary text-[14px]'>Filtered by:</span>
+              <span className='text-white text-[14px] font-semibold'>#{selectedTech}</span>
+              <button
+                type='button'
+                className='text-[14px] text-secondary hover:text-white underline underline-offset-2'
+                onClick={() => {
+                  onClearTech?.()
+                  // fallback if parent didn't pass onClearTech
+                  onSelectTech?.('')
+                }}
+              >
+                Clear
+              </button>
+              <span className='text-secondary text-[14px]'>({filteredProjects.length})</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className='mt-10 auto-grid-projects scroll-zone disable-select'>
-        {projects.map((project, index) => (
-          <ProjectCard key={`project-${index}`} index={index} {...project} />
-        ))}
+      <div key={gridKey} className='mt-10 auto-grid-projects scroll-zone disable-select'>
+        {filteredProjects.length === 0 ? (
+          <p className='text-secondary'>
+            No projects found for <span className='text-white font-semibold'>#{selectedTech}</span>.
+          </p>
+        ) : (
+          filteredProjects.map((project, index) => (
+            <ProjectCard
+              key={`project-${project.name || project.source_code_link || index}`}
+              index={index}
+              {...project}
+              onSelectTech={onSelectTech}
+            />
+          ))
+        )}
       </div>
     </>
   )

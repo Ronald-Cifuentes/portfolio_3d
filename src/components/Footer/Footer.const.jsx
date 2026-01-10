@@ -2,6 +2,7 @@ import Facebook from '../../assets/Facebook_40x40.svg?react'
 import Instagram from '../../assets/Instagram_40x40.svg?react'
 import Linkedin from '../../assets/Linkedin_40x40.svg?react'
 import Twitter from '../../assets/Twitter_40x40.svg?react'
+import Whatsapp from '../../assets/Whatsapp_40x40.svg?react'
 
 export const List = [
   {
@@ -19,5 +20,9 @@ export const List = [
   {
     icon: <Instagram />,
     link: 'https://www.instagram.com/ronald_cifuentes_x',
+  },
+  {
+    icon: <Whatsapp />,
+    link: 'https://wa.me/573043885536',
   },
 ]

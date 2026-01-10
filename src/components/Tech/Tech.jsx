@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { SectionWrapper } from '../../hoc'
-import { Tilt } from 'react-tilt'
+import './Tech.css'
+
 import {
   BackendDeveloper,
   ControlVersions,
@@ -15,9 +14,13 @@ import {
   Web3,
   WebLayout,
 } from '../../constants'
-import { services } from '../../constants'
-import './Tech.css'
+import React, { useState } from 'react'
+
+import { SectionWrapper } from '../../hoc'
+import { Tilt } from 'react-tilt'
 import { method } from '../../assets'
+import { services } from '../../constants'
+import { techNamesMatch } from '../../utils/techFilter'
 
 const ServiceCard = ({ index, title, icon, setShow }) => (
   <Tilt className='xs:w-[250px] w-full cursor-pointer disable-select'>
@@ -41,15 +44,27 @@ const ServiceCard = ({ index, title, icon, setShow }) => (
   </Tilt>
 )
 
-const ContentSkills = props => {
+const ContentSkills = ({ tech, selectedTech, onSelectTech }) => {
+  const isActive = Boolean(selectedTech && techNamesMatch(tech.name, selectedTech))
+
   return (
-    <div className='card-container'>
+    <div
+      className={`card-container ${isActive ? 'card-container--active' : ''}`}
+      role='button'
+      tabIndex={0}
+      onClick={() => onSelectTech?.(isActive ? '' : tech.name)}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') onSelectTech?.(isActive ? '' : tech.name)
+      }}
+      aria-pressed={isActive}
+      title='Filter projects by this technology'
+    >
       <div className='card'>
         <div className='card2'>
-          <img className='max-h-full' src={props.tech.icon} alt='' />
+          <img className='max-h-full' src={tech.icon} alt='' />
         </div>
       </div>
-      <span>{props.tech.name}</span>
+      <span>{tech.name}</span>
     </div>
   )
 }
@@ -63,13 +78,13 @@ const Technologies = {
   'Designer UX/UI': DesignerUXUI,
   'Web 3': Web3,
   'Editors And Shortcuts': EditorsAndShortcuts,
-  'Prompt Enginering': PromptEnginering,
+  'AI & Machine Learning': PromptEnginering,
   'Data Bases': Databases,
   'Deployment & Cloud': DeploymentAndCloud,
   'Testing and Security': TestingAndSecurity,
 }
 
-const Tech = ({ dataTestId = 'tech' }) => {
+const Tech = ({ dataTestId = 'tech', selectedTech = '', onSelectTech }) => {
   const [show, setShow] = useState('')
 
   const items = services.filter(item => item.title === show)
@@ -86,7 +101,12 @@ const Tech = ({ dataTestId = 'tech' }) => {
       {show !== '' && (
         <div data-testid={dataTestId} className='auto-grid'>
           {Technologies[show].map((tech, ind) => (
-            <ContentSkills key={`skill-card-${ind}`} tech={tech} />
+            <ContentSkills
+              key={`skill-card-${ind}`}
+              tech={tech}
+              selectedTech={selectedTech}
+              onSelectTech={onSelectTech}
+            />
           ))}
         </div>
       )}
