@@ -17,25 +17,33 @@ import {
 import React, { useState } from 'react'
 
 import { SectionWrapper } from '../../hoc'
-import { Tilt } from 'react-tilt'
+import Tilt from 'react-parallax-tilt'
 import { method } from '../../assets'
 import { services } from '../../constants'
 import { techNamesMatch } from '../../utils/techFilter'
 
 const ServiceCard = ({ index, title, icon, setShow }) => (
-  <Tilt className='xs:w-[250px] w-full cursor-pointer disable-select'>
+  <Tilt
+    tiltMaxAngleX={45}
+    tiltMaxAngleY={45}
+    scale={1}
+    transitionSpeed={450}
+    className='xs:w-[250px] w-full cursor-pointer disable-select'
+  >
     <div
-      className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card'
+      role='button'
+      tabIndex={0}
+      aria-label={`Show ${title} skills`}
+      className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card cursor-pointer'
       onClick={() => setShow(prev => (prev !== title ? title : ''))}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          setShow(prev => (prev !== title ? title : ''))
+        }
+      }}
     >
-      <div
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
-        className='card-skill bg-tertiary rounded-[20px] py-5 px-12 min-h-[200px] flex justify-evenly items-center flex-col'
-      >
+      <div className='card-skill bg-tertiary rounded-[20px] py-5 px-12 min-h-[200px] flex justify-evenly items-center flex-col'>
         <img src={icon} alt='web-development' className='w-16 h-16 object-contain' />
 
         <h3 className='text-white text-[20px] font-bold text-center'>{title}</h3>

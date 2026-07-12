@@ -193,7 +193,7 @@ const YoutubeBG = forwardRef(function YoutubeBG(
       params.set('origin', window.location.origin)
     }
 
-    return `https://www.youtube.com/embed/${encodeURIComponent(
+    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(
       currentVideoId
     )}?${params.toString()}`
   }, [currentVideo])
@@ -201,15 +201,33 @@ const YoutubeBG = forwardRef(function YoutubeBG(
   const cl = ['ytbg', className].filter(Boolean).join(' ')
   const shadeCl = ['ytbg__shade', shadeClassName].filter(Boolean).join(' ')
 
+  const [mountIframe, setMountIframe] = useState(false)
+
+  useEffect(() => {
+    if (!initialized) return
+    let raf1 = 0
+    let raf2 = 0
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        setMountIframe(true)
+      })
+    })
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1)
+      if (raf2) cancelAnimationFrame(raf2)
+    }
+  }, [initialized])
+
   return (
     <div className={cl} aria-hidden='true'>
-      {initialized && (
+      {mountIframe && (
         <div className={'ytbg__video'}>
           <iframe
             key={src}
             className={'ytbg__iframe'}
             src={src}
             title='YouTube background'
+            loading='lazy'
             frameBorder={0}
             allow='autoplay; encrypted-media; picture-in-picture'
             referrerPolicy='strict-origin-when-cross-origin'

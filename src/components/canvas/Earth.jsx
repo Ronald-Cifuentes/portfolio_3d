@@ -1,18 +1,22 @@
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
+import React, { Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Preload, useGLTF } from '@react-three/drei'
 
-import CanvasLoader from "../Loader";
+import './three-patches'
+import CanvasLoader from '../Loader'
+import { isWebGLAvailable } from '../../utils/webgl'
 
 const Earth = () => {
-  const earth = useGLTF("./planet/scene.gltf");
+  const earth = useGLTF('./planet/scene-opt.glb')
 
-  return (
-    <primitive object={earth.scene} scale={2.5} position-y={0} rotation-y={0} />
-  );
-};
+  return <primitive object={earth.scene} scale={2.5} position-y={0} rotation-y={0} />
+}
 
 const EarthCanvas = () => {
+  if (!isWebGLAvailable) {
+    return null
+  }
+
   return (
     <Canvas
       shadows
@@ -38,7 +42,7 @@ const EarthCanvas = () => {
         <Preload all />
       </Suspense>
     </Canvas>
-  );
-};
+  )
+}
 
-export default EarthCanvas;
+export default EarthCanvas

@@ -2,9 +2,9 @@ import React, { useMemo } from 'react'
 import { fadeIn, textVariant } from '../utils/motion'
 
 import { SectionWrapper } from '../hoc'
-import { Tilt } from 'react-tilt'
+import Tilt from 'react-parallax-tilt'
 import { github } from '../assets'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { matchesSelectedTechToTag, normalizeTechName } from '../utils/techFilter'
 import { projects } from '../constants'
 import { styles } from '../styles'
@@ -15,15 +15,14 @@ const ProjectCard = ({ index, name, tags, image, source_code_link, onSelectTech 
       variants={fadeIn('up', 'spring', index * 0.1, 0.75)}
       initial='hidden'
       animate='show'
-      onClick={() => window.open(source_code_link, '_blank')}
+      onClick={() => window.open(source_code_link, '_blank', 'noopener,noreferrer')}
       className='cursor-pointer w-full'
     >
       <Tilt
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
+        tiltMaxAngleX={45}
+        tiltMaxAngleY={45}
+        scale={1}
+        transitionSpeed={450}
         className='bg-tertiary p-4 rounded-2xl w-full h-full'
       >
         <div className='relative w-full h-[175px]'>

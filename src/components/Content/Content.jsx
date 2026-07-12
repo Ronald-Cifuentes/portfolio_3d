@@ -1,4 +1,3 @@
-// import { control, control1, control2, control3 } from '../../assets'
 import './Content.css'
 
 import { ComputersCanvas } from '../canvas'

@@ -3,9 +3,18 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Preload, useGLTF } from '@react-three/drei'
 
 import CanvasLoader from '../Loader'
+import { isWebGLAvailable } from '../../utils/webgl'
+
+const WebGLFallback = () => (
+  <div className='w-full h-full flex items-center justify-center'>
+    <p className='text-secondary text-center px-4'>
+      3D disabled — enable graphics acceleration in your browser to view
+    </p>
+  </div>
+)
 
 const Computers = ({ isMobile }) => {
-  const computer = useGLTF('./desktop_pc/scene.gltf')
+  const computer = useGLTF('./desktop_pc/scene-opt.glb')
   const meshRef = useRef()
   useFrame(() => {
     meshRef.current.rotation.y -= 0.001
@@ -34,6 +43,20 @@ const Computers = ({ isMobile }) => {
 }
 
 const ComputersCanvas = () => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const handler = e => setIsMobile(e.matches)
+    handler(mq)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  if (!isWebGLAvailable) {
+    return <WebGLFallback />
+  }
+
   return (
     <Canvas
       shadows
@@ -43,7 +66,7 @@ const ComputersCanvas = () => {
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 2} />
-        <Computers isMobile={false} />
+        <Computers isMobile={isMobile} />
       </Suspense>
 
       <Preload all />

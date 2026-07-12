@@ -5,7 +5,7 @@ import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeli
 import React from 'react'
 import { SectionWrapper } from '../hoc'
 import { experiences } from '../constants'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { styles } from '../styles'
 import { textVariant } from '../utils/motion'
 
