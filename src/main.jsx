@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import 'font-awesome/css/font-awesome.min.css'
 
+import './utils/consoleNoiseFilter'
 import App from './App'
 import './index.css'
 

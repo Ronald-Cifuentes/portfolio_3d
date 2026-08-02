@@ -1,0 +1,429 @@
+@property --showcase-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.project-showcase {
+  --showcase-accent: #915eff;
+  --showcase-accent-2: #00e0ff;
+  --showcase-accent-3: #ff5edb;
+  --showcase-radius: 20px;
+  --showcase-card-w: 320px;
+  --showcase-lift: -10px;
+
+  width: 100%;
+  opacity: 1;
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    display 0.45s allow-discrete;
+}
+
+@starting-style {
+  .project-showcase {
+    opacity: 0;
+  }
+}
+
+.project-showcase[data-visible='false'] {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+/* FE-006 fix: no stagger delay on base rule, only on enter/exit */
+.project-showcase__card {
+  position: relative;
+  width: min(100%, var(--showcase-card-w));
+  aspect-ratio: 4 / 5;
+  padding: 2px;
+  border-radius: var(--showcase-radius);
+  background: rgba(145, 94, 255, 0.22);
+  isolation: isolate;
+  transform-style: preserve-3d;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.45s ease,
+    opacity 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    display 0.45s allow-discrete;
+}
+
+/* Enter animation with capped stagger */
+@starting-style {
+  .project-showcase__card {
+    opacity: 0;
+    transform: scale(0.86) translateY(18px);
+    filter: blur(12px);
+    transition-delay: calc(min(var(--i, 0), 6) * 45ms);
+  }
+}
+
+.project-showcase[data-visible='false'] .project-showcase__card {
+  opacity: 0;
+  transform: scale(0.72) translateY(-10px);
+  filter: blur(14px);
+  transition-delay: calc(min(var(--i, 0), 6) * 45ms);
+}
+
+.project-showcase__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--showcase-angle),
+    transparent 0deg,
+    var(--showcase-accent) 70deg,
+    var(--showcase-accent-2) 140deg,
+    var(--showcase-accent-3) 210deg,
+    transparent 280deg
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.project-showcase__card:hover,
+.project-showcase__card:focus-within {
+  transform: perspective(900px) translateY(var(--showcase-lift));
+  box-shadow:
+    0 28px 60px -28px rgba(145, 94, 255, 0.85),
+    0 18px 44px -30px rgba(0, 0, 0, 0.95);
+}
+
+.project-showcase__card:hover::before,
+.project-showcase__card:focus-within::before {
+  opacity: 1;
+  animation: showcase-spin 4s linear infinite;
+}
+
+@keyframes showcase-spin {
+  to {
+    --showcase-angle: 360deg;
+  }
+}
+
+.project-showcase:has(.project-showcase__card:hover) .project-showcase__card:not(:hover) {
+  opacity: 0.55;
+  filter: saturate(0.6);
+}
+
+.project-showcase__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--showcase-radius) - 2px);
+  background: linear-gradient(152deg, #1e1839 0%, #221a44 46%, #16122d 100%);
+}
+
+.project-showcase__media {
+  position: absolute;
+  inset: 0;
+}
+
+.project-showcase__media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  transform: scale(1.01);
+  transition:
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.5s ease;
+  filter: saturate(0.85) brightness(0.72);
+}
+
+.project-showcase__card:hover .project-showcase__media img,
+.project-showcase__card:focus-within .project-showcase__media img {
+  transform: scale(1.1);
+  filter: saturate(1.05) brightness(0.9);
+}
+
+/* FE-005 fix: static gradient, animate transform instead of background */
+.project-showcase__spotlight {
+  position: absolute;
+  inset: -20%;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    260px circle at 50% 50%,
+    rgba(145, 94, 255, 0.32),
+    rgba(0, 224, 255, 0.14) 42%,
+    transparent 68%
+  );
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+}
+
+.project-showcase__card:hover .project-showcase__spotlight,
+.project-showcase__card:focus-within .project-showcase__spotlight {
+  opacity: 1;
+  animation: spotlight-move 3s ease-in-out infinite alternate;
+}
+
+/* FE-005 fix: animate transform only, not background */
+@keyframes spotlight-move {
+  0% {
+    transform: translate3d(-15%, -15%, 0);
+  }
+  100% {
+    transform: translate3d(15%, 15%, 0);
+  }
+}
+
+.project-showcase__sheen {
+  position: absolute;
+  inset: -40%;
+  z-index: 3;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 58%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.project-showcase__card:hover .project-showcase__sheen,
+.project-showcase__card:focus-within .project-showcase__sheen {
+  animation: showcase-sheen 1.1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes showcase-sheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+
+.project-showcase__body {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  padding: 20px 18px 18px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(6, 4, 18, 0.72) 38%,
+    rgba(6, 4, 18, 0.96) 100%
+  );
+  transform: translateY(0);
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.project-showcase__card:hover .project-showcase__body,
+.project-showcase__card:focus-within .project-showcase__body {
+  transform: translateY(-4px);
+}
+
+.project-showcase__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}
+
+.project-showcase__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 56px;
+  overflow: hidden;
+}
+
+.project-showcase__tags button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 0;
+  border: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  background: transparent;
+  position: relative;
+}
+
+.project-showcase__tags button:hover {
+  text-decoration: underline;
+}
+
+.project-showcase__tags button:focus-visible,
+.project-showcase__cta:focus-visible {
+  outline: 2px solid var(--showcase-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.project-showcase__tags button[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 200;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.project-showcase__tags button[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.92);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 200;
+  transition: opacity 0.2s ease;
+}
+
+.project-showcase__tags button[data-tooltip]:hover::after,
+.project-showcase__tags button[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.project-showcase__tags button[data-tooltip]:hover::before,
+.project-showcase__tags button[data-tooltip]:focus-visible::before {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .project-showcase__tags button[data-tooltip]::after {
+    max-width: calc(100vw - 60px);
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+.project-showcase__more {
+  align-self: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.project-showcase__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 25px;
+  margin-top: 14px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7c4dff 0%, #a367ff 52%, var(--showcase-accent) 100%);
+  box-shadow: 0 10px 24px -12px rgba(145, 94, 255, 0.95);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.project-showcase__cta span {
+  transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.project-showcase__card:hover .project-showcase__cta span {
+  transform: translateX(5px);
+}
+
+.project-showcase__empty {
+  padding: 32px 0;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-showcase,
+  .project-showcase__card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    filter: none !important;
+  }
+
+  @starting-style {
+    .project-showcase,
+    .project-showcase__card {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .project-showcase[data-visible='false'] {
+    display: none;
+  }
+
+  .project-showcase[data-visible='false'] .project-showcase__card {
+    opacity: 0;
+    transform: none;
+    filter: none;
+  }
+
+  .project-showcase__card::before,
+  .project-showcase__sheen,
+  .project-showcase__spotlight,
+  .project-showcase__media img,
+  .project-showcase__body,
+  .project-showcase__cta span {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .project-showcase__card:hover,
+  .project-showcase__card:focus-within {
+    transform: none;
+  }
+
+  .project-showcase:has(.project-showcase__card:hover) .project-showcase__card:not(:hover) {
+    opacity: 1;
+    filter: none;
+  }
+
+  .project-showcase__tags button[data-tooltip]::after,
+  .project-showcase__tags button[data-tooltip]::before {
+    transition: none !important;
+  }
+}

@@ -43,7 +43,7 @@ const YoutubeBG = forwardRef(function YoutubeBG(
   const [playlistIndex, setPlaylistIndex] = useState(0)
   const [initialized, setInitialized] = useState(!randomStart)
 
-  // Reset on playlist change
+
   useEffect(() => {
     if (!normalizedPlaylist?.length) {
       setInitialized(true)
@@ -57,7 +57,7 @@ const YoutubeBG = forwardRef(function YoutubeBG(
       return
     }
 
-    // Prefer "different on each reload": avoid repeating the last chosen index for the same playlist.
+
     const lastRaw =
       typeof window !== 'undefined' ? window.sessionStorage?.getItem(playlistStorageKey) : null
     const lastIndex = lastRaw != null ? Number(lastRaw) : NaN
@@ -73,21 +73,21 @@ const YoutubeBG = forwardRef(function YoutubeBG(
 
     let nextIndex = getRandomInt(length)
     if (Number.isFinite(lastIndex) && length > 1 && nextIndex === lastIndex) {
-      // deterministic nudge to guarantee "different than last" without looping
+
       nextIndex = (nextIndex + 1) % length
     }
 
     try {
       window.sessionStorage?.setItem(playlistStorageKey, String(nextIndex))
     } catch {
-      // ignore storage failures (private mode, etc.)
+
     }
 
     setPlaylistIndex(nextIndex)
     setInitialized(true)
   }, [normalizedPlaylist?.length, playlistStorageKey, randomStart])
 
-  // Rotate through playlist based on segment duration (end - start)
+
   useEffect(() => {
     if (!normalizedPlaylist?.length) return
 
@@ -116,7 +116,7 @@ const YoutubeBG = forwardRef(function YoutubeBG(
       try {
         window.sessionStorage?.setItem(playlistStorageKey, String(nextIndex))
       } catch {
-        // ignore
+
       }
     },
     [playlistStorageKey]
@@ -159,18 +159,18 @@ const YoutubeBG = forwardRef(function YoutubeBG(
     params.set('autoplay', '1')
     params.set('controls', '0')
     params.set('loop', '1')
-    // Looping a single video requires playlist=VIDEO_ID
+
     params.set('playlist', currentVideoId)
     params.set('playsinline', '1')
-    // Hides annotations by default
+
     params.set('iv_load_policy', '3')
-    // Can't fully disable "related"; rel=0 keeps it in the same channel.
+
     params.set('rel', '0')
-    // Prevent fullscreen button
+
     params.set('fs', '0')
-    // Prevent keyboard shortcuts from controlling the player
+
     params.set('disablekb', '1')
-    // Works in many browsers for muted autoplay
+
     params.set('mute', '1')
 
     if (
@@ -188,7 +188,7 @@ const YoutubeBG = forwardRef(function YoutubeBG(
       params.set('end', String(Math.floor(currentVideo.end)))
     }
 
-    // Recommended if you use enablejsapi; harmless otherwise.
+
     if (typeof window !== 'undefined' && window.location?.origin) {
       params.set('origin', window.location.origin)
     }

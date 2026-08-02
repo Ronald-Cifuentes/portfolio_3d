@@ -1,18 +1,10 @@
 import { BrowserRouter, useLocation } from 'react-router-dom'
-import {
-  Contact,
-  Content,
-  Experience,
-  Navbar,
-  Projects,
-  Skills,
-  StarsCanvas,
-  Tech,
-} from './components'
+import { Contact, Content, Experience, Navbar, Projects, StarsCanvas, Skills } from './components'
 import React, { useEffect, useRef, useState } from 'react'
 
 import Background from './components/Background/Background'
 import Footer from './components/Footer/Footer'
+import { t } from './utils/i18n'
 
 const ScrollToHash = () => {
   const location = useLocation()
@@ -21,7 +13,6 @@ const ScrollToHash = () => {
     const hash = location.hash?.replace('#', '')
     if (!hash) return
 
-    // Wait for React to paint the target section before attempting scroll
     const id = decodeURIComponent(hash)
     const scroll = () => {
       const el = document.getElementById(id)
@@ -45,7 +36,7 @@ const ScrollToHash = () => {
 
 const App = () => {
   const ytBgRef = useRef(null)
-  const [selectedTech, setSelectedTech] = useState('')
+
 
   return (
     <BrowserRouter>
@@ -63,7 +54,7 @@ const App = () => {
               className='ytbg__btn ytbg__btn--prev'
               type='button'
               onClick={() => ytBgRef.current?.prev?.()}
-              aria-label='Previous video'
+              aria-label={t('background.previousVideo')}
             >
               ‹
             </button>
@@ -71,7 +62,7 @@ const App = () => {
               className='ytbg__btn ytbg__btn--next'
               type='button'
               onClick={() => ytBgRef.current?.next?.()}
-              aria-label='Next video'
+              aria-label={t('background.nextVideo')}
             >
               ›
             </button>
@@ -80,13 +71,11 @@ const App = () => {
         </div>
 
         <Experience />
+
+        <Projects  />
+
         <Skills />
-        <Tech selectedTech={selectedTech} onSelectTech={setSelectedTech} />
-        <Projects
-          selectedTech={selectedTech}
-          onSelectTech={setSelectedTech}
-          onClearTech={() => setSelectedTech('')}
-        />
+
         <div className='relative z-0'>
           <Contact />
           <StarsCanvas />

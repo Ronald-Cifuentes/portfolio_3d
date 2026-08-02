@@ -1,127 +1,214 @@
-import React, { useMemo } from 'react'
-import { fadeIn, textVariant } from '../utils/motion'
+import 'animate.css'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/effect-coverflow'
+import './Projects.css'
 
-import { SectionWrapper } from '../hoc'
-import Tilt from 'react-parallax-tilt'
-import { github } from '../assets'
+import React, { useMemo, useRef, useState } from 'react'
+import { A11y, Autoplay, EffectCoverflow, Keyboard, Navigation } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { textVariant } from '../utils/motion'
 import { motion } from 'motion/react'
-import { matchesSelectedTechToTag, normalizeTechName } from '../utils/techFilter'
-import { projects } from '../constants'
 import { styles } from '../styles'
 
-const ProjectCard = ({ index, name, tags, image, source_code_link, onSelectTech }) => {
-  return (
-    <motion.div
-      variants={fadeIn('up', 'spring', index * 0.1, 0.75)}
-      initial='hidden'
-      animate='show'
-      onClick={() => window.open(source_code_link, '_blank', 'noopener,noreferrer')}
-      className='cursor-pointer w-full'
+import { SectionWrapper } from '../hoc'
+import { github } from '../assets'
+import { projects } from '../constants'
+import { t } from '../utils/i18n'
+import useRevealOnScroll from '../utils/useRevealOnScroll'
+
+const COVERFLOW_EFFECT = {
+  rotate: 0,
+  stretch: 50,
+  depth: 220,
+  modifier: 2,
+
+
+  slideShadows: false,
+  scale: 1,
+}
+
+const AUTOPLAY = { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true }
+const PREVIEW_TAGS = 4
+
+
+const MIN_LOOP_SLIDES = 16
+
+
+const LOOP_BUFFER = 4
+
+
+
+
+const NEIGHBOURS_PER_SIDE = 3
+
+
+
+
+
+
+const capNeighbours = swiper => {
+  const step = slide => Math.round(slide.progress)
+  let left = 0
+  let right = 0
+  swiper.slides.forEach(slide => {
+    const p = step(slide)
+    if (p > 0 && p <= NEIGHBOURS_PER_SIDE) left += 1
+    else if (p < 0 && p >= -NEIGHBOURS_PER_SIDE) right += 1
+  })
+
+  const perSide = Math.min(left, right, NEIGHBOURS_PER_SIDE)
+  swiper.slides.forEach(slide => {
+    const beyond = Math.abs(step(slide)) > perSide
+    slide.style.visibility = beyond ? 'hidden' : ''
+    slide.style.pointerEvents = beyond ? 'none' : ''
+  })
+}
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const ProjectSlide = ({ name, tags, image, source_code_link, onSelectTech }) => (
+  <article className='project-slide' style={{ '--project-shot': `url(${image})` }}>
+    <a
+      className='project-slide__link'
+      href={source_code_link}
+      target='_blank'
+      rel='noopener noreferrer'
+      aria-label={t('projects.openSourceCode', { name })}
     >
-      <Tilt
-        tiltMaxAngleX={45}
-        tiltMaxAngleY={45}
-        scale={1}
-        transitionSpeed={450}
-        className='bg-tertiary p-4 rounded-2xl w-full h-full'
-      >
-        <div className='relative w-full h-[175px]'>
-          <img src={image} alt='project_image' className='w-full h-full object-cover rounded-2xl' />
+      <img
+        className='project-slide__image'
+        src={image}
+        alt={t('projects.imageAlt', { name })}
+        loading='lazy'
+      />
+      <span className='project-slide__repo' aria-hidden='true'>
+        <img src={github} alt='' />
+      </span>
+    </a>
 
-          <div className='absolute inset-0 flex justify-end m-2 card-img_hover'>
-            <div className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'>
-              <img src={github} alt='source code' className='w-1/2 h-1/2 object-contain' />
-            </div>
-          </div>
-        </div>
+    <div className='project-slide__content'>
+      <h3 className='project-slide__title'>{name}</h3>
 
-        <div className='mt-0'>
-          <h3 className='text-white font-bold text-[24px]'>{name}</h3>
-        </div>
-
-        <div className='mt-0 flex flex-wrap gap-x-2'>
-          {tags.map(tag => (
+      <ul className='project-slide__tags'>
+        {tags.slice(0, PREVIEW_TAGS).map(tag => (
+          <li key={`${name}-${tag.name}`}>
             <button
-              key={`${name}-${tag.name}`}
               type='button'
-              className={`text-[14px] ${tag.color} hover:underline`}
-              onClick={e => {
-                e.stopPropagation()
-                onSelectTech?.(tag.name)
-              }}
-              aria-label={`Filter projects by ${tag.name}`}
+              className={tag.color}
+              onClick={() => onSelectTech?.(tag.name)}
+              aria-label={t('projects.filterByTag', { tag: tag.name })}
             >
               #{tag.name}
             </button>
-          ))}
-        </div>
-      </Tilt>
-    </motion.div>
-  )
-}
+          </li>
+        ))}
+        {tags.length > PREVIEW_TAGS && (
+          <li className='project-slide__tags-more'>+{tags.length - PREVIEW_TAGS}</li>
+        )}
+      </ul>
 
-const Projects = ({ selectedTech = '', onSelectTech, onClearTech }) => {
-  const filteredProjects = useMemo(() => {
-    if (!selectedTech) return projects
-    return projects.filter(p => p.tags?.some(t => matchesSelectedTechToTag(selectedTech, t.name)))
-  }, [selectedTech])
+      <span className='project-slide__cta'>
+        {t('projects.viewSource')}
+        <span aria-hidden='true' className='project-slide__cta-arrow'>
+          →
+        </span>
+      </span>
+    </div>
+  </article>
+)
 
-  const gridKey = `projects-grid-${normalizeTechName(selectedTech) || 'all'}`
+const Projects = ({ onSelectTech }) => {
+  const [revealRef, revealed] = useRevealOnScroll()
+  const swiperRef = useRef(null)
+  const [activeProject, setActiveProject] = useState(0)
+
+
+
+
+  const filteredProjects = projects
+
+
+
+
+
+
+  const loopedProjects = useMemo(() => {
+    if (filteredProjects.length < 2) return filteredProjects.map(project => ({ project, pass: 0 }))
+    const passes = Math.ceil(MIN_LOOP_SLIDES / filteredProjects.length)
+    return Array.from({ length: passes }, (_, pass) =>
+      filteredProjects.map(project => ({ project, pass }))
+    ).flat()
+  }, [filteredProjects])
+
+  const carouselKey = 'projects-carousel-all'
 
   return (
     <>
-      <motion.div variants={textVariant()}>
-        <h2 className={`${styles.sectionHeadText}`}>Projects.</h2>
+      <motion.div variants={textVariant()} initial='hidden' animate='show'>
+        <h2 className={`${styles.sectionHeadText} text-center`}>{t('projects.heading')}</h2>
       </motion.div>
 
-      <div className='w-full flex'>
-        <div className='flex flex-col gap-3'>
-          <motion.p
-            variants={fadeIn('', '', 0.1, 1)}
-            className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
-          >
-            Following projects showcases my skills and experience through real-world examples of my
-            work. Each project is briefly described with links to code repositories and live demos
-            in it. It reflects my ability to solve complex problems, work with different
-            technologies, and manage projects effectively.
-          </motion.p>
+      <div
+        ref={revealRef}
+        className={
+          revealed
+            ? 'mt-20 projects-reveal animate__animated animate__fadeInUp animate__fast'
+            : 'mt-20 projects-reveal is-pending'
+        }
+      >
+        <div className='projects-carousel disable-select'>
+          {filteredProjects.length > 0 && (
+            <Swiper
+              key={carouselKey}
+              modules={[EffectCoverflow, Navigation, Autoplay, Keyboard, A11y]}
+              effect='coverflow'
+              slidesPerView='auto'
+              centeredSlides
+              grabCursor
+              watchSlidesProgress
+              loop={loopedProjects.length > 1}
+              loopAdditionalSlides={LOOP_BUFFER}
+              navigation
+              keyboard={{ enabled: true }}
+              autoplay={prefersReducedMotion() ? false : AUTOPLAY}
+              coverflowEffect={COVERFLOW_EFFECT}
+              onSwiper={swiper => {
+                swiperRef.current = swiper
+              }}
+              onInit={capNeighbours}
+              onSetTranslate={capNeighbours}
+              onResize={capNeighbours}
+              onSlideChange={swiper => setActiveProject(swiper.realIndex % filteredProjects.length)}
+            >
+              {loopedProjects.map(({ project, pass }, index) => (
+                <SwiperSlide
+                  key={`project-${pass ?? 0}-${project.name || project.source_code_link || index}`}
+                >
+                  <ProjectSlide {...project} onSelectTech={onSelectTech} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
 
-          {selectedTech && (
-            <div className='flex flex-wrap items-center gap-2'>
-              <span className='text-secondary text-[14px]'>Filtered by:</span>
-              <span className='text-white text-[14px] font-semibold'>#{selectedTech}</span>
-              <button
-                type='button'
-                className='text-[14px] text-secondary hover:text-white underline underline-offset-2'
-                onClick={() => {
-                  onClearTech?.()
-                  // fallback if parent didn't pass onClearTech
-                  onSelectTech?.('')
-                }}
-              >
-                Clear
-              </button>
-              <span className='text-secondary text-[14px]'>({filteredProjects.length})</span>
+          {filteredProjects.length > 1 && (
+            <div className='projects-carousel__dots'>
+              {filteredProjects.map((project, index) => (
+                <button
+                  key={`dot-${project.name || project.source_code_link || index}`}
+                  type='button'
+                  className={index === activeProject ? 'is-active' : undefined}
+                  aria-label={t('projects.goToProject', { name: project.name })}
+                  aria-current={index === activeProject}
+                  onClick={() => swiperRef.current?.slideToLoop(index)}
+                />
+              ))}
             </div>
           )}
         </div>
-      </div>
-
-      <div key={gridKey} className='mt-10 auto-grid-projects scroll-zone disable-select'>
-        {filteredProjects.length === 0 ? (
-          <p className='text-secondary'>
-            No projects found for <span className='text-white font-semibold'>#{selectedTech}</span>.
-          </p>
-        ) : (
-          filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={`project-${project.name || project.source_code_link || index}`}
-              index={index}
-              {...project}
-              onSelectTech={onSelectTech}
-            />
-          ))
-        )}
       </div>
     </>
   )

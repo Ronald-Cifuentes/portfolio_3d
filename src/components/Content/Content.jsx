@@ -1,8 +1,7 @@
 import './Content.css'
-
-import { ComputersCanvas } from '../canvas'
 import React from 'react'
 import { styles } from '../../styles'
+import { t } from '../../utils/i18n'
 
 const Content = () => {
   return (
@@ -10,22 +9,18 @@ const Content = () => {
       <div
         className={`absolute inset-0 top-[96px] sm:top-[120px] ${styles.paddingX} flex flex-row items-start gap-5`}
       >
-        <div className='flex flex-col justify-center items-center mt-5'></div>
-        <div className='w-3 h-52 rainbow-bg' />
-
-        <div>
-          <h1 className={`${styles.heroHeadText} text-white`}>
-            Hi, I'm <span className='rainbow-text'>Ronald</span>
-          </h1>
-          <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            Tech Lead | Sr React Developer | Sr Frontend | UX / UI | Sr Backend | Sr Nodejs | Sr
-            Python | Web3 | Javascript | Mobile | Data Scientist | Machine Learning | AI |
-            Cryptocurrencies
-          </p>
+        <div className='hero-title-wrapper ml-5 flex flex-row items-stretch gap-5'>
+          <div className='w-2 shrink-0 rainbow-bg self-stretch' />
+          <div className='control-title-home'>
+            <h1 className={`${styles.heroHeadText} text-white`}>
+              {t('hero.greeting')}
+              <br />
+              {t('hero.intro')} <span className='rainbow-text'>{t('hero.name')}</span>
+            </h1>
+            <p className={`${styles.heroSubText} mt-2 text-white-100`}>{t('hero.roles')}</p>
+          </div>
         </div>
       </div>
-
-      <ComputersCanvas />
     </section>
   )
 }

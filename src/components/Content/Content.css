@@ -1,18 +1,13 @@
 .rainbow-text {
-  font-family: Oswald;
-  font-size: 100px;
+  font-size: inherit;
   animation: Color 4s linear infinite;
   -webkit-animation: Color 4s ease-in-out infinite;
 }
 
 .rainbow-bg {
-  font-family: Oswald;
-  font-size: 100px;
   animation: Bg 4s linear infinite;
   -webkit-animation: Bg 4s ease-in-out infinite;
 }
-
-/* COLOR TEXT */
 
 @keyframes Color {
   0% {
@@ -91,8 +86,6 @@
     color: #ac92ec;
   }
 }
-
-/* BACGROUND COLOR */
 @keyframes Bg {
   0% {
     background: #a0d468;

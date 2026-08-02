@@ -10,6 +10,7 @@ import {
   Bitbucket,
   Bitcoin,
   Blender,
+  Bold,
   Bootstrap,
   Bulma,
   C,
@@ -113,12 +114,12 @@ export const navLinks = [
     title: 'Work',
   },
   {
-    id: 'skills',
-    title: 'Skills',
-  },
-  {
     id: 'projects',
     title: 'Projects',
+  },
+  {
+    id: 'skills',
+    title: 'Skills',
   },
   {
     id: 'contact',
@@ -128,16 +129,59 @@ export const navLinks = [
 
 export const experiences = [
   {
+    title: 'Senior Angular Frontend Developer',
+    company_name: 'Bold.co',
+    icon: Bold,
+    iconBg: '#383E56',
+    date: 'February 2024 - Present',
+    location: 'Remote',
+    summary:
+      'Senior frontend engineer building Angular + TypeScript SPAs and platforms shipped through continuous delivery, with a focus on reusable architecture, performance and measurable impact.',
+    technologies: [
+      'Angular',
+      'TypeScript',
+      'RxJS',
+      'NgRx',
+      'GraphQL',
+      'REST APIs',
+      'Unit & E2E Testing',
+      'CI/CD',
+    ],
+    points: [
+      'Production: Angular + TypeScript SPAs/platforms with continuous delivery and high stability.',
+      'Architecture: Reusable modules/libraries, design patterns, and well-separated responsibilities.',
+      'State/Reactive: Advanced RxJS, NgRx when appropriate, robust forms and validations.',
+      'UI/UX: Design systems, reusable components, accessibility, and responsive design.',
+      'Performance: Lazy loading, bundle optimization, rendering, and performance metrics (Lighthouse/Core Web Vitals).',
+      'Quality/Delivery: Unit/E2E testing, CI/CD, code reviews, and maintainable documentation.',
+      'Integration: REST/GraphQL APIs and collaboration with backend teams (Node/TS, databases, cloud).',
+      'Leadership: Mentoring, estimation, and coordination with Design/PM teams to deliver measurable impact.',
+    ],
+  },
+  {
     title: 'Sr React Developer & FullStack',
     company_name: 'Acid Labs',
     icon: Acid,
     iconBg: '#383E56',
     date: 'February 2023 - Present',
+    location: 'Remote',
+    summary:
+      'Senior full-stack engineer designing and scaling micro-frontend architectures for enterprise products — from shared component libraries to production-grade React applications.',
+    technologies: [
+      'React',
+      'TypeScript',
+      'Webpack',
+      'Module Federation',
+      'Material UI',
+      'Jest',
+      'Cypress',
+      'Node.js',
+    ],
     points: [
-      'Custom development, Creation, Increase and Correction of different repositories using webpack and module federation.',
-      'Layout and translate designs or mockups into react, Typescript, MaterialUI.',
-      'Testing with Jest and Cypress',
-      'suggest constant improvements in the development process and optimization of the different tasks',
+      'Architect and maintain multiple repositories with Webpack Module Federation, composing independently deployable micro-frontends into cohesive products.',
+      'Translate designs and mockups into pixel-accurate, accessible interfaces with React, TypeScript and Material UI.',
+      'Safeguard reliability through automated testing — unit suites in Jest and end-to-end coverage in Cypress.',
+      'Drive continuous improvement of the development workflow, championing best practices and optimizing recurring tasks across the team.',
     ],
   },
   {
@@ -146,11 +190,15 @@ export const experiences = [
     icon: Treinta,
     iconBg: '#E6DEDD',
     date: 'June 2022 - May 2023',
+    location: 'Remote',
+    summary:
+      'Built and maintained web experiences for a fintech platform empowering small businesses across Latin America to manage their finances.',
+    technologies: ['React', 'JavaScript', 'Redux', 'Responsive Design', 'REST APIs', 'Git'],
     points: [
-      'Developing and maintaining web applications using React.js and other related technologies.',
-      'Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.',
-      'Implementing responsive design and ensuring cross-browser compatibility.',
-      'Participating in code reviews and providing constructive feedback to other developers.',
+      'Developed and maintained web applications using React.js and its surrounding ecosystem.',
+      'Collaborated with cross-functional teams — designers, product managers and fellow developers — to ship high-quality, user-centered products.',
+      'Implemented responsive layouts and ensured consistent cross-browser compatibility.',
+      'Participated in code reviews, giving constructive feedback that raised the team’s overall code quality.',
     ],
   },
   {
@@ -159,11 +207,15 @@ export const experiences = [
     icon: ITG,
     iconBg: '#383E56',
     date: 'September 2021 - May 2022',
+    location: 'Remote',
+    summary:
+      'Delivered tailored e-commerce experiences on the VTEX platform, turning designs into performant storefronts.',
+    technologies: ['React', 'VTEX', 'JavaScript', 'E-commerce', 'Git'],
     points: [
-      'Creation of customized solutions for E-commerce',
-      'Layout and translate designs or mockups into react, vtex and another programming languages.',
-      'suggest constant improvements in the development process and optimization of the different tasks.',
-      'Participating in code reviews and providing constructive feedback to other developers.',
+      'Created customized e-commerce solutions, tailoring each storefront to the client’s needs.',
+      'Translated designs and mockups into React and VTEX components alongside other supporting technologies.',
+      'Proposed continuous improvements to the development process, streamlining and optimizing recurring tasks.',
+      'Reviewed peers’ code and provided constructive feedback to strengthen the codebase.',
     ],
   },
   {
@@ -172,11 +224,15 @@ export const experiences = [
     icon: Softgic,
     iconBg: '#E6DEDD',
     date: 'July 2020 - August 2021',
+    location: 'Medellín, Colombia',
+    summary:
+      'Analyst and developer bridging design and engineering, delivering intuitive interfaces built on solid, secure information architecture.',
+    technologies: ['React', 'JavaScript', 'UX/UI', 'Node.js', 'Security Standards'],
     points: [
-      'Propose solutions in early stages to avoid collateral damage',
-      'Layout and translate designs or mockups into programming languages',
-      'Apply best practices in interactivity and User Experience (UX)',
-      'Guarantee the correct implementation of the information architecture with security standards',
+      'Anticipated risks by proposing solutions in the early stages of each project, preventing collateral damage later on.',
+      'Translated designs and mockups into clean, maintainable code.',
+      'Applied best practices in interactivity and User Experience (UX) to deliver intuitive interfaces.',
+      'Ensured the correct implementation of information architecture in line with security standards.',
     ],
   },
   {
@@ -185,12 +241,15 @@ export const experiences = [
     icon: Mantum,
     iconBg: '#E6DEDD',
     date: 'August 2019 - June 2020',
+    location: 'Medellín, Colombia',
+    summary:
+      'Full-cycle developer and tester on the Mantum CMMS — a computerized maintenance management system — combining feature work with quality assurance.',
+    technologies: ['JavaScript', 'PHP', 'SQL', 'Scrum', 'QA / Testing', 'Databases'],
     points: [
-      'Custom development, Increase and Correction of modules of the Mantum CMMS system',
-      'QA and suggestions for constant improvement',
-      'Agile methodologies (Scrum) & QA',
-      'Management of DBs',
-      'Management of DBs',
+      'Developed, extended and fixed modules of the Mantum CMMS (computerized maintenance management system).',
+      'Performed QA and proposed continuous improvements to the product.',
+      'Worked within Agile (Scrum) methodologies, pairing development with quality assurance.',
+      'Designed and managed the relational databases powering the system.',
     ],
   },
   {
@@ -199,10 +258,14 @@ export const experiences = [
     icon: CCF,
     iconBg: '#E6DEDD',
     date: 'January 2018 - August 2019',
+    location: 'Medellín, Colombia',
+    summary:
+      'Independent developer and technician delivering web projects and hardware services across software, electronics and electrical systems.',
+    technologies: ['PHP', 'HTML', 'CSS', 'JavaScript', 'Electronics'],
     points: [
-      'Custom development and maintenance of LandingPages and applications with php, html, css and javascript',
-      'Cell phone technician',
-      'Christian Faith Community Attention to computer systems, assembly, maintenance and repair of public type led signs, repair of all types of audio and electronic systems',
+      'Built and maintained landing pages and web applications with PHP, HTML, CSS and JavaScript.',
+      'Provided cell-phone repair and technical services.',
+      'Supported the Christian Faith Community with IT systems — assembly, maintenance and repair — plus large public LED signage and a broad range of audio and electronic systems.',
     ],
   },
   {
@@ -211,10 +274,14 @@ export const experiences = [
     icon: Sena,
     iconBg: '#E6DEDD',
     date: 'March 2016 - December 2017',
+    location: 'Colombia',
+    summary:
+      'Instructor and researcher developing embedded systems and industrial hardware while teaching the next generation of technicians.',
+    technologies: ['C', 'C++', 'Python', 'VB.Net', 'Embedded Systems', 'Firmware'],
     points: [
-      'Software development for general control of National Instruments embedded systems in c and c ++',
-      'Development of software, firmware and hardware for public led boards with PicC and VB.Net, python',
-      'Management, prototype and construction of an induction hardening machine for Industry',
+      'Developed control software for National Instruments embedded systems in C and C++.',
+      'Built software, firmware and hardware for public LED display boards using PIC C, VB.Net and Python.',
+      'Led the design, prototyping and construction of an induction-hardening machine for industrial use.',
     ],
   },
 ]

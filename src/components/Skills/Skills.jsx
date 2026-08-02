@@ -1,44 +1,254 @@
-import React from 'react'
-
-import { motion } from 'motion/react'
-
-import { styles } from '../../styles'
-import { SectionWrapper } from '../../hoc'
-import { fadeIn, textVariant } from '../../utils/motion'
 import './Skills.css'
 
-const Text = [
-  `I am an experienced software developer with knowledge in different Backend and Frontend technologies, such as React, Angular, Vue and Svelte. I have skills for UX/UI design, using version control, creating responsive designs and working with different editors and shortcuts. I also have knowledge of Prompt Engineering which is the process of creating effective Prompts for artificial intelligence models.`,
-  `On the backend side, I can develop applications using JavaScript, C, C++, C#, Java, Python and PHP. I am familiar with different frameworks, libraries and tools for each language. I can also work with various databases, such as SQLServer, MongoDB, Firebase and others. I know how to implement and manage applications on cloud platforms, such as Azure, AWS and Google Cloud. I also follow best practices for testing and security, such as unit testing, integration testing, code analysis, encryption, authentication and authorization.`,
-  `I am passionate about learning new technologies and solving challenging problems. I have a strong work ethic and a collaborative attitude. I am always looking for opportunities to improve my skills and contribute to the success of the projects I work on. Let's work together to bring your ideas to life!`,
-]
+import {
+  BackendDeveloper,
+  ControlVersions,
+  Databases,
+  DeploymentAndCloud,
+  DesignerUXUI,
+  EditorsAndShortcuts,
+  FrontendDeveloper,
+  Methodologies,
+  PromptEnginering,
+  TestingAndSecurity,
+  Web3,
+  WebLayout,
+  services,
+} from '../../constants'
+import React, { useRef, useState } from 'react'
 
-const Skills = () => {
+import ProjectShowcase from '../ProjectShowcase'
+import { SectionWrapper } from '../../hoc'
+import Tilt from 'react-parallax-tilt'
+import { techNamesMatchExact } from '../../utils/techFilter'
+import { t } from '../../utils/i18n'
+import { motion } from 'motion/react'
+import { textVariant } from '../../utils/motion'
+import { styles } from '../../styles'
+
+const Technologies = {
+  Methodologies: Methodologies,
+  'Control Versions': ControlVersions,
+  'Web Layout': WebLayout,
+  'Frontend Developer': FrontendDeveloper,
+  'Backend Developer': BackendDeveloper,
+  'Designer UX/UI': DesignerUXUI,
+  'Web 3': Web3,
+  'Editors And Shortcuts': EditorsAndShortcuts,
+  'AI & Machine Learning': PromptEnginering,
+  'Data Bases': Databases,
+  'Deployment & Cloud': DeploymentAndCloud,
+  'Testing and Security': TestingAndSecurity,
+}
+
+const findCategoryAndTechExact = techName => {
+  for (const [categoryTitle, techs] of Object.entries(Technologies)) {
+    const matchingTech = techs.find(tech => techNamesMatchExact(tech.name, techName))
+    if (matchingTech) {
+      return { category: categoryTitle, tech: matchingTech }
+    }
+  }
+  return null
+}
+
+const ServiceCard = ({ index, title, icon, isSelected, stage, onClick }) => {
+  const tooltipText = isSelected ? t('tech.backToCategories') : t('tech.exploreCategory', { title })
+
   return (
-    <div className='flex flex-col items-center gradient-box'>
-      <motion.div variants={textVariant()}>
-        <h2 className={styles.sectionHeadText}>Skills and Technologies.</h2>
-      </motion.div>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+    <div
+      className='service-card-wrapper xs:w-[250px] w-full cursor-pointer disable-select'
+      style={{ '--i': index }}
+      data-selected={isSelected ? 'true' : 'false'}
+    >
+      <Tilt
+        tiltMaxAngleX={45}
+        tiltMaxAngleY={45}
+        scale={1}
+        transitionSpeed={450}
+        className='w-full h-full'
       >
-        {Text[0]}
-      </motion.p>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
-      >
-        {Text[1]}
-      </motion.p>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
-      >
-        {Text[2]}
-      </motion.p>
+        <div
+          role='button'
+          tabIndex={0}
+          aria-label={t('tech.showSkills', { title })}
+          aria-pressed={isSelected}
+          className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card cursor-pointer service-card'
+          data-tooltip={tooltipText}
+          onClick={onClick}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onClick()
+            }
+          }}
+        >
+          <div className='card-skill bg-tertiary rounded-[20px] py-5 px-12 min-h-[200px] flex justify-evenly items-center flex-col'>
+            <img src={icon} alt='web-development' className='w-16 h-16 object-contain' />
+            <h3 className='text-white text-[20px] font-bold text-center'>{title}</h3>
+          </div>
+        </div>
+      </Tilt>
     </div>
   )
 }
 
-export default SectionWrapper(Skills, 'skills')
+const ContentSkills = ({ tech, isActive, onClick, index }) => {
+  const tooltipText = isActive ? t('tech.clearFilter') : t('tech.filterByTech', { name: tech.name })
+
+  return (
+    <div
+      className={`card-container ${isActive ? 'card-container--active' : ''}`}
+      role='button'
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') onClick()
+      }}
+      aria-pressed={isActive}
+      aria-label={isActive ? t('tech.clearFilter') : t('tech.filterByTech', { name: tech.name })}
+      data-tooltip={tooltipText}
+      data-selected={isActive ? 'true' : 'false'}
+      style={{ '--i': index }}
+    >
+      <div className='card'>
+        <div className='card2'>
+          <img className='max-h-full' src={tech.icon} alt='' />
+        </div>
+      </div>
+      <span>{tech.name}</span>
+    </div>
+  )
+}
+
+const OrphanTechCard = ({ techName, onClick, index }) => {
+  const tooltipText = t('tech.clearFilter')
+
+  return (
+    <div
+      className='card-container card-container--active card-container--orphan'
+      role='button'
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') onClick()
+      }}
+      aria-pressed={true}
+      aria-label={t('tech.clearFilter')}
+      data-tooltip={tooltipText}
+      data-selected='true'
+      style={{ '--i': index }}
+    >
+      <div className='card'>
+        <div className='card2 card2--orphan'>
+          <span className='orphan-label'>{techName}</span>
+        </div>
+      </div>
+      <span>{techName}</span>
+    </div>
+  )
+}
+
+const Tech = ({ dataTestId = 'tech'}) => {
+  const [show, setShow] = useState('')
+  const lastCategoryRef = useRef('')
+  const lastProjectsRef = useRef([])
+
+  const [selectedTech, setSelectedTech] = useState('')
+
+  const exactMatch = selectedTech ? findCategoryAndTechExact(selectedTech) : null
+  const derivedCategory = exactMatch?.category || null
+  const effectiveShow = derivedCategory || show
+  const isOrphanTech = Boolean(selectedTech && !exactMatch)
+
+  if (effectiveShow && effectiveShow !== lastCategoryRef.current) {
+    lastCategoryRef.current = effectiveShow
+  }
+  const mountedCategory = effectiveShow || lastCategoryRef.current
+
+  const stage = selectedTech ? 'tech' : effectiveShow ? 'category' : 'idle'
+
+  const handleServiceClick = title => {
+    if (stage === 'tech') {
+      return
+    }
+    if (show === title) {
+      setShow('')
+      setSelectedTech?.('')
+    } else {
+      setShow(title)
+      setSelectedTech?.('')
+    }
+  }
+
+  const handleTechClick = techName => {
+    if (selectedTech && techNamesMatchExact(techName, selectedTech)) {
+      setSelectedTech?.('')
+    } else {
+      setSelectedTech?.(techName)
+    }
+  }
+
+  const handleOrphanClick = () => {
+    setSelectedTech?.('')
+    setShow('')
+  }
+
+  const techs = mountedCategory ? Technologies[mountedCategory] || [] : []
+
+  return (
+    <div>
+      <motion.div variants={textVariant()} initial='hidden' animate='show'>
+        <h2 className={`${styles.sectionHeadText} text-center`}>{t('skills.heading')}</h2>
+      </motion.div>
+
+      <div className='flex flex-wrap gap-10 justify-center service-cards-row mt-16' data-stage={stage}>
+        {services.map((service, index) => {
+          const isSelected = effectiveShow === service.title
+          return (
+            <ServiceCard
+              key={service.title}
+              index={index}
+              title={service.title}
+              icon={service.icon}
+              isSelected={isSelected}
+              stage={stage}
+              onClick={() => handleServiceClick(service.title)}
+            />
+          )
+        })}
+      </div>
+
+      <div
+        data-testid={dataTestId}
+        className='auto-grid tech-grid'
+        data-stage={stage}
+        data-visible={mountedCategory || isOrphanTech ? 'true' : 'false'}
+      >
+        {isOrphanTech ? (
+          <OrphanTechCard techName={selectedTech} onClick={handleOrphanClick} index={0} />
+        ) : (
+          techs.map((tech, ind) => {
+            const isActive = Boolean(selectedTech && techNamesMatchExact(tech.name, selectedTech))
+            return (
+              <ContentSkills
+                key={`skill-card-${ind}`}
+                tech={tech}
+                isActive={isActive}
+                onClick={() => handleTechClick(tech.name)}
+                index={ind}
+              />
+            )
+          })
+        )}
+      </div>
+
+      <ProjectShowcase
+        selectedTech={selectedTech}
+        setSelectedTech={setSelectedTech}
+        lastProjectsRef={lastProjectsRef}
+      />
+    </div>
+  )
+}
+
+export default SectionWrapper(Tech, '')

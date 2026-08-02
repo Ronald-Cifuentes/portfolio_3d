@@ -1,5 +1,5 @@
-// WebGL availability detection utility
-// Evaluated once at module load to avoid repeated canvas creation
+
+
 
 const detectWebGL = () => {
   try {
@@ -11,5 +11,5 @@ const detectWebGL = () => {
   }
 }
 
-// Evaluate once and cache
+
 export const isWebGLAvailable = typeof document !== 'undefined' ? detectWebGL() : false
