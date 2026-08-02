@@ -1,44 +1,113 @@
-import React from 'react'
-
-import { motion } from 'motion/react'
-
-import { styles } from '../../styles'
-import { SectionWrapper } from '../../hoc'
-import { fadeIn, textVariant } from '../../utils/motion'
 import './Skills.css'
 
-const Text = [
-  `I am an experienced software developer with knowledge in different Backend and Frontend technologies, such as React, Angular, Vue and Svelte. I have skills for UX/UI design, using version control, creating responsive designs and working with different editors and shortcuts. I also have knowledge of Prompt Engineering which is the process of creating effective Prompts for artificial intelligence models.`,
-  `On the backend side, I can develop applications using JavaScript, C, C++, C#, Java, Python and PHP. I am familiar with different frameworks, libraries and tools for each language. I can also work with various databases, such as SQLServer, MongoDB, Firebase and others. I know how to implement and manage applications on cloud platforms, such as Azure, AWS and Google Cloud. I also follow best practices for testing and security, such as unit testing, integration testing, code analysis, encryption, authentication and authorization.`,
-  `I am passionate about learning new technologies and solving challenging problems. I have a strong work ethic and a collaborative attitude. I am always looking for opportunities to improve my skills and contribute to the success of the projects I work on. Let's work together to bring your ideas to life!`,
-]
+import { useState } from 'react'
+import { m } from 'motion/react'
 
-const Skills = () => {
+import CategoryCard from './CategoryCard'
+import ProjectShowcase from '../ProjectShowcase'
+import { TECH_CATEGORIES } from '../../constants'
+import TechCard from './TechCard'
+import { findCategoryForTech, techsOfCategory } from '../../lib/techCategories'
+import { styles } from '../../styles'
+import { t } from '../../lib/i18n'
+import { techNamesMatchExactly } from '../../lib/techMatching'
+import { textVariant } from '../../lib/motionVariants'
+
+const STAGE = Object.freeze({
+  IDLE: 'idle',
+  CATEGORY: 'category',
+  TECH: 'tech',
+})
+
+const NO_CATEGORY = ''
+const NO_TECH = ''
+
+const stageFor = (selectedTech, categoryId) => {
+  if (selectedTech) return STAGE.TECH
+  if (categoryId) return STAGE.CATEGORY
+
+  return STAGE.IDLE
+}
+
+const Skills = ({ selectedTech, onSelectTech }) => {
+  const [openedCategoryId, setOpenedCategoryId] = useState(NO_CATEGORY)
+
+  const matchedTech = findCategoryForTech(TECH_CATEGORIES, selectedTech)
+  const activeCategoryId = matchedTech?.category.id ?? openedCategoryId
+  const isUnknownTech = Boolean(selectedTech) && !matchedTech
+  const stage = stageFor(selectedTech, activeCategoryId)
+
+  const [mountedCategoryId, setMountedCategoryId] = useState(activeCategoryId)
+  if (activeCategoryId && activeCategoryId !== mountedCategoryId) {
+    setMountedCategoryId(activeCategoryId)
+  }
+
+  const toggleCategory = categoryId => {
+    if (stage === STAGE.TECH) return
+
+    setOpenedCategoryId(current => (current === categoryId ? NO_CATEGORY : categoryId))
+    onSelectTech(NO_TECH)
+  }
+
+  const toggleTech = techName => {
+    const alreadySelected = selectedTech && techNamesMatchExactly(techName, selectedTech)
+    onSelectTech(alreadySelected ? NO_TECH : techName)
+  }
+
+  const clearUnknownTech = () => {
+    onSelectTech(NO_TECH)
+    setOpenedCategoryId(NO_CATEGORY)
+  }
+
+  const techs = techsOfCategory(TECH_CATEGORIES, mountedCategoryId)
+
   return (
-    <div className='flex flex-col items-center gradient-box'>
-      <motion.div variants={textVariant()}>
-        <h2 className={styles.sectionHeadText}>Skills and Technologies.</h2>
-      </motion.div>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+    <div>
+      <m.div variants={textVariant()} initial='hidden' animate='show'>
+        <h2 className={`${styles.sectionHeadText} text-center`}>{t('skills.heading')}</h2>
+      </m.div>
+
+      <div
+        className='flex flex-wrap gap-10 justify-center service-cards-row mt-16'
+        data-stage={stage}
       >
-        {Text[0]}
-      </motion.p>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+        {TECH_CATEGORIES.map((category, index) => (
+          <CategoryCard
+            key={category.id}
+            title={category.title}
+            icon={category.icon}
+            index={index}
+            isSelected={activeCategoryId === category.id}
+            onSelect={() => toggleCategory(category.id)}
+          />
+        ))}
+      </div>
+
+      <div
+        data-testid='tech-grid'
+        className='auto-grid tech-grid'
+        data-stage={stage}
+        data-visible={mountedCategoryId || isUnknownTech ? 'true' : 'false'}
       >
-        {Text[1]}
-      </motion.p>
-      <motion.p
-        variants={fadeIn('', '', 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
-      >
-        {Text[2]}
-      </motion.p>
+        {isUnknownTech ? (
+          <TechCard name={selectedTech} isActive index={0} onToggle={clearUnknownTech} />
+        ) : (
+          techs.map((tech, index) => (
+            <TechCard
+              key={tech.name}
+              name={tech.name}
+              icon={tech.icon}
+              index={index}
+              isActive={Boolean(selectedTech && techNamesMatchExactly(tech.name, selectedTech))}
+              onToggle={() => toggleTech(tech.name)}
+            />
+          ))
+        )}
+      </div>
+
+      <ProjectShowcase selectedTech={selectedTech} onSelectTech={onSelectTech} />
     </div>
   )
 }
 
-export default SectionWrapper(Skills, 'skills')
+export default Skills

@@ -1,0 +1,30 @@
+.animate__animated {
+  animation-duration: var(--animate-duration, 1s);
+  animation-fill-mode: both;
+}
+
+.animate__fast {
+  animation-duration: calc(var(--animate-duration, 1s) * 0.8);
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate__zoomIn {
+  animation-name: zoomIn;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate__animated {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

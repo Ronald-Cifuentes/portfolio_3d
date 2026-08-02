@@ -1,98 +1,81 @@
-import { BrowserRouter, useLocation } from 'react-router-dom'
-import {
-  Contact,
-  Content,
-  Experience,
-  Navbar,
-  Projects,
-  Skills,
-  StarsCanvas,
-  Tech,
-} from './components'
-import React, { useEffect, useRef, useState } from 'react'
+import { LazyMotion, domAnimation } from 'motion/react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 
-import Background from './components/Background/Background'
-import Footer from './components/Footer/Footer'
+import Background from './components/Background'
+import Contact from './components/Contact'
+import Experience from './components/Experience'
+import Footer from './components/Footer'
+import Hero from './components/Hero'
+import Navbar from './components/Navbar'
+import Projects from './components/Projects'
+import Section from './components/Section'
+import Skills from './components/Skills'
+import { isWebGLAvailable } from './platform/webgl'
+import { navigateToSection } from './platform/sectionNavigation'
+import { scheduleDeferredChunkWarmUp } from './platform/deferredChunks'
+import useDeferredChunksReady from './hooks/useDeferredChunksReady'
+import useHashScrollSettling from './hooks/useHashScrollSettling'
+import useMountWhenNear from './hooks/useMountWhenNear'
 
-const ScrollToHash = () => {
-  const location = useLocation()
+const StarsCanvas = lazy(() => import('./components/canvas/StarsCanvas'))
 
-  useEffect(() => {
-    const hash = location.hash?.replace('#', '')
-    if (!hash) return
-
-    // Wait for React to paint the target section before attempting scroll
-    const id = decodeURIComponent(hash)
-    const scroll = () => {
-      const el = document.getElementById(id)
-      if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' })
-    }
-
-    let raf1 = 0
-    let raf2 = 0
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(scroll)
-    })
-
-    return () => {
-      if (raf1) cancelAnimationFrame(raf1)
-      if (raf2) cancelAnimationFrame(raf2)
-    }
-  }, [location.hash])
-
-  return null
-}
+const SKILLS_SECTION_ID = 'skills'
+const NO_TECH = ''
+const STARS_MOUNT_MARGIN = '1400px'
 
 const App = () => {
-  const ytBgRef = useRef(null)
-  const [selectedTech, setSelectedTech] = useState('')
+  const [selectedTech, setSelectedTech] = useState(NO_TECH)
+  const [setStarsNode, starsNear] = useMountWhenNear(STARS_MOUNT_MARGIN)
+  const chunksReady = useDeferredChunksReady()
+
+  useHashScrollSettling()
+  useEffect(scheduleDeferredChunkWarmUp, [])
+
+  const selectTechAndRevealSkills = techName => {
+    setSelectedTech(techName)
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => navigateToSection(SKILLS_SECTION_ID))
+    })
+  }
 
   return (
-    <BrowserRouter>
-      <ScrollToHash />
+    <LazyMotion features={domAnimation}>
       <div className='relative z-0 bg-black'>
         <div
           id='home'
           className='relative overflow-hidden bg-cover bg-no-repeat bg-center min-h-[100svh]'
         >
           <Navbar />
-          <Content />
-          <Background ytRef={ytBgRef} />
-          <div className='ytbg__controls ytbg__controls--overlay' aria-hidden={false}>
-            <button
-              className='ytbg__btn ytbg__btn--prev'
-              type='button'
-              onClick={() => ytBgRef.current?.prev?.()}
-              aria-label='Previous video'
-            >
-              ‹
-            </button>
-            <button
-              className='ytbg__btn ytbg__btn--next'
-              type='button'
-              onClick={() => ytBgRef.current?.next?.()}
-              aria-label='Next video'
-            >
-              ›
-            </button>
-          </div>
+          <Hero />
+          <Background />
           <Footer />
         </div>
 
-        <Experience />
-        <Skills />
-        <Tech selectedTech={selectedTech} onSelectTech={setSelectedTech} />
-        <Projects
-          selectedTech={selectedTech}
-          onSelectTech={setSelectedTech}
-          onClearTech={() => setSelectedTech('')}
-        />
-        <div className='relative z-0'>
-          <Contact />
-          <StarsCanvas />
+        <Section id='work'>
+          <Experience />
+        </Section>
+
+        <Section id='projects'>
+          <Projects onSelectTech={selectTechAndRevealSkills} />
+        </Section>
+
+        <Section id={SKILLS_SECTION_ID}>
+          <Skills selectedTech={selectedTech} onSelectTech={setSelectedTech} />
+        </Section>
+
+        <div className='relative z-0' ref={setStarsNode}>
+          <Section id='contact'>
+            <Contact />
+          </Section>
+          {isWebGLAvailable && (starsNear || chunksReady) && (
+            <Suspense fallback={null}>
+              <StarsCanvas />
+            </Suspense>
+          )}
         </div>
       </div>
-    </BrowserRouter>
+    </LazyMotion>
   )
 }
 

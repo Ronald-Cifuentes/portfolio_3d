@@ -1,0 +1,102 @@
+.ytbg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.ytbg__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ytbg__iframe {
+  --ytbg-player-width: 1280px;
+  --ytbg-player-height: 720px;
+  --ytbg-player-offset-x: -640px;
+  --ytbg-player-offset-y: -360px;
+  --ytbg-cover-scale: 1;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 0;
+  pointer-events: none;
+  transform-origin: center center;
+
+  width: var(--ytbg-player-width);
+  height: var(--ytbg-player-height);
+  margin-left: var(--ytbg-player-offset-x);
+  margin-top: var(--ytbg-player-offset-y);
+}
+
+.ytbg__iframe--upscaled {
+  transform: scale(var(--ytbg-cover-scale));
+}
+
+.ytbg__fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 80% at 20% 10%, rgba(145, 94, 255, 0.35) 0%, transparent 60%),
+    radial-gradient(100% 90% at 85% 90%, rgba(60, 30, 140, 0.45) 0%, transparent 65%),
+    linear-gradient(160deg, #0d0a1f 0%, #16122d 55%, #050409 100%);
+}
+
+.ytbg__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 1;
+}
+.ytbg__controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ytbg__controls--overlay {
+  z-index: 30;
+}
+
+.ytbg__btn {
+  pointer-events: auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(6px);
+}
+
+.ytbg__btn:active {
+  transform: scale(0.96);
+}
+
+@media (min-width: 640px) {
+  .ytbg__controls {
+    padding: 16px;
+  }
+  .ytbg__btn {
+    width: 60px;
+    height: 60px;
+    font-size: 44px;
+  }
+}

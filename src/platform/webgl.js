@@ -1,0 +1,15 @@
+const detectWebGL = () => {
+  try {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('webgl2') || canvas.getContext('webgl')
+    return ctx !== null
+  } catch {
+    return false
+  }
+}
+
+export const isWebGLAvailable = typeof document !== 'undefined' ? detectWebGL() : false
+
+export const skipBlockingShaderValidationInProduction = gl => {
+  if (import.meta.env.PROD) gl.debug.checkShaderErrors = false
+}

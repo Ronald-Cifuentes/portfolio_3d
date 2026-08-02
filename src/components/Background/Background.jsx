@@ -1,56 +1,52 @@
 import './Background.css'
 
-import React from 'react'
-import YoutubeBG from '../YoutubeBG'
+import { BACKGROUND_PLAYLIST } from '../../constants'
+import YoutubeBackground from '../YoutubeBackground'
+import { normalizePlaylist } from '../../lib/youtubeEmbed'
+import { t } from '../../lib/i18n'
+import useInViewport from '../../hooks/useInViewport'
+import usePlaylistRotation from '../../hooks/usePlaylistRotation'
 
-const YT_PLAYLIST = [
-  {
-    videoId: 'L3Dp4oGkn3k',
-    start: 0,
-    end: 60,
-  },
-  {
-    videoId: 'lH6qlF_iegU',
-    start: 0,
-    end: 60,
-  },
-  {
-    videoId: 'ibNrPjETR_k',
-    start: 18,
-    end: 78,
-  },
-  {
-    videoId: 'pwuFTsvJL34',
-    start: 0,
-    end: 60,
-  },
-  {
-    videoId: 'TPWYQ94Ief4',
-    start: 60,
-    end: 120,
-  },
-  {
-    videoId: 'cCFuSD1MIgw',
-    start: 0,
-    end: 60,
-  },
-  {
-    videoId: 'pLBda_P7leU',
-    start: 60,
-    end: 120,
-  },
-  {
-    videoId: 'SjC5bezSaWU',
-    start: 60,
-    end: 120,
-  },
-]
+const PLAYLIST = normalizePlaylist(BACKGROUND_PLAYLIST)
+const SHADE_OPACITY = 0.01
+const HERO_VIEWPORT_MARGIN = '0px'
 
-const Background = ({ ytRef }) => {
+const Background = () => {
+  const [setHeroNode, heroInView] = useInViewport(HERO_VIEWPORT_MARGIN)
+  const { currentEntry, started, goToPrevious, goToNext } = usePlaylistRotation(PLAYLIST, {
+    randomStart: true,
+    rotate: heroInView,
+  })
+
   return (
-    <section className='showcase'>
-      <YoutubeBG ref={ytRef} playlist={YT_PLAYLIST} randomStart shadeOpacity={0.01} />
-    </section>
+    <>
+      <section className='showcase' ref={setHeroNode}>
+        <YoutubeBackground
+          entry={started ? currentEntry : null}
+          playing={heroInView}
+          shadeOpacity={SHADE_OPACITY}
+        />
+      </section>
+
+      <div className='ytbg__controls ytbg__controls--overlay'>
+        <button
+          className='ytbg__btn ytbg__btn--prev'
+          type='button'
+          onClick={goToPrevious}
+          aria-label={t('background.previousVideo')}
+        >
+          ‹
+        </button>
+        <button
+          className='ytbg__btn ytbg__btn--next'
+          type='button'
+          onClick={goToNext}
+          aria-label={t('background.nextVideo')}
+        >
+          ›
+        </button>
+      </div>
+    </>
   )
 }
 
